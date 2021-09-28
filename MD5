@@ -1,9 +1,9 @@
-0cf2fbbb3b2be7dcbff831a7604623fd *DESCRIPTION
+57ecf0295e6c73c2b58f627e0e78f7da *DESCRIPTION
 e77a2e16a00b25bb35857966ee11eefa *NAMESPACE
 700ffa3e1725b9aecfa18bcf00da9d51 *R/RcppExports.R
-7b19e21afe5749e2fd276d5e95fed048 *R/auxiliary.R
-c3736f118e397618d4fa753eb6c773bc *R/getPValue.R
-b30a5aadfd23e587bee6152307928e1f *build/partial.rdb
+00ccd106bcb280987d7fe1ddac332c82 *R/auxiliary.R
+8d84e41d2065031336d8cd8cf96f9490 *R/getPValue.R
+d846538180b24fd9d7b9a5d9a8c3cf09 *build/partial.rdb
 fd5c2e86fbabda2d1b54ae657237d293 *configure.ac
 2d5a135e57f930710e99f3fbbb7d9796 *man/blockGaussian.Rd
 8ba8b9351a4b8e401069321ef68c1b8c *man/blockLargeP.Rd
@@ -34,6 +34,6 @@ f7ac981f9cf9dbd7eb097fd978d3e96d *man/naiveBlockPermute2.Rd
 0c1310c769866637a177723c5f80fbbf *man/weightedChi2P.Rd
 bbc1904c377b0137c3f394609156e005 *src/Makevars.in
 8d409be81382ae972a4b8de0a50a6400 *src/RcppExports.cpp
-8f16f15ba21f6b106d830f9ccfad9ad1 *src/fast_dist_calc.cpp
+8697aa3e827aad5f1cd5ef6f7da0cb4c *src/fast_dist_calc.cpp
 e437a3deec9e6eb3edbed4fcc8af9cc3 *tests/testthat.R
-cac3f28939befc649c07df35da81fac9 *tests/testthat/test-flintyR.R
+ccbb5b58cc0f8e390dbd1473729f670f *tests/testthat/test-flintyR.R
