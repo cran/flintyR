@@ -4,7 +4,7 @@
 \alias{getBlockCov}
 \title{Covariance Computations Between Pairs of Distances (Block Dependencies Case)}
 \usage{
-getBlockCov(X, block_boundaries, block_labels, p = 2)
+getBlockCov(X, block_boundaries, block_labels, p)
 }
 \arguments{
 \item{X}{The binary or real matrix}
@@ -21,7 +21,7 @@ The three distinct entries of covariance matrix, \eqn{(\alpha, \beta, \gamma)}
 }
 \description{
 Computes covariance matrix entries and associated alpha, beta
-and gamma quantities defined in Aw, Spence and Song (2021),
+and gamma quantities defined in Aw, Spence and Song (2023),
 for partitionable features that are grouped into blocks. Uses
 precomputation to compute the unique entries of the asymptotic
 covariance matrix of the pairwise Hamming distances in \eqn{O(N^2)} time.

@@ -15,9 +15,9 @@ lp_distance(X, p)
 vector of \eqn{l_p^p} distances (arma::vec class)
 }
 \description{
-Takes in a double matrix X, whose transpose t(X)
-has N rows, and computes a vector recording all
-\eqn{{N \choose 2}} pairwise \eqn{l_p^p} distances of t(X),
+Takes in a double matrix \eqn{\mathbf{X}}, whose transpose \eqn{\mathbf{X}^T}
+has \eqn{N} rows, and computes a vector recording all
+\eqn{{N \choose 2}} pairwise \eqn{l_p^p} distances of \eqn{\mathbf{X}^T},
 ordered lexicographically.
 }
 \examples{

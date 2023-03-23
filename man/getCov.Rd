@@ -16,7 +16,7 @@ The three distinct entries of covariance matrix, \eqn{(\alpha, \beta, \gamma)}
 }
 \description{
 Computes covariance matrix entries and associated alpha, beta
-and gamma quantities defined in Aw, Spence and Song (2021),
+and gamma quantities defined in Aw, Spence and Song (2023),
 assuming the \eqn{P} features of the dataset \eqn{\mathbf{X}} are independent.
 }
 \details{

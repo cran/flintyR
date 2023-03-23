@@ -14,7 +14,7 @@ getBinVStat(X)
 }
 \description{
 Computes \eqn{V} statistic for a binary matrix \eqn{\mathbf{X}}, as defined in
-Aw, Spence and Song (2021+).
+Aw, Spence and Song (2023).
 }
 \details{
 Dependencies: getHammingDistance

@@ -9,7 +9,7 @@ getRealVStat(X, p)
 \arguments{
 \item{X}{The \eqn{N \times P} real matrix}
 
-\item{p}{The power \eqn{p} of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}s}
+\item{p}{The power \eqn{p} of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}}
 }
 \value{
 \eqn{V(\mathbf{X})}, the variance of the pairwise \eqn{l_p^p} distance between samples

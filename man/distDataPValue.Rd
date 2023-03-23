@@ -2,29 +2,36 @@
 % Please edit documentation in R/getPValue.R
 \name{distDataPValue}
 \alias{distDataPValue}
-\title{A Non-parametric Test for Exchangeability and Homogeneity (Distance List Version)}
+\title{A Non-parametric Test of Sample Exchangeability and Feature Independence (Distance List Version)}
 \usage{
-distDataPValue(dist_list, largeP = FALSE, nruns = 1000)
+distDataPValue(dist_list, largeP = FALSE, nruns = 1000, type = "unbiased")
 }
 \arguments{
-\item{dist_list}{The list of distances}
+\item{dist_list}{The list of distances.}
 
 \item{largeP}{Boolean indicating whether to use large \eqn{P} asymptotics. Default is FALSE.}
 
 \item{nruns}{Resampling number for exact test. Default is 1000.}
+
+\item{type}{Either an unbiased estimate of ('unbiased', default), or valid, but biased estimate of, ('valid') p-value 
+(see Hemerik and Goeman, 2018), or both ('both'). Default is 'unbiased'. Note that unbiased estimate can return \eqn{0}.}
 }
 \value{
-The p-value to be used to test the null hypothesis of exchangeability
+The p-value to be used to test the null hypothesis of exchangeability.
 }
 \description{
-Computes the p-value of a multivariate dataset, which
-informs the user if the sample is exchangeable at a given
-significance level, while simultaneously accounting for feature
-dependencies. See Aw, Spence and Song (2021) for details.
+The V test computes the p-value of a multivariate dataset, which
+informs the user about one of two decisions: (1) whether the sample is exchangeable 
+at a given significance level, assuming that the feature dependencies are known; 
+or (2) whether the features or groups of features are independent at a given significance
+level, assuming that the sample is exchangeable. This version takes in a list of 
+distance matrices recording pairwise distances between individuals across \eqn{B} 
+independent features. It can be used to test one of two hypotheses: (H1) the 
+sample is exchangeable, assuming that each feature whose pairwise distance data
+is available is statistically independent of any other feature, or (H2) the 
+\eqn{B} features whose pairwise distance data is available are independent, assuming
+that the sample is exchangeable.
 }
 \details{
-This version takes in a list of distance matrices recording
-pairwise distances between individuals across \eqn{B} independent features.
-
 Dependencies: distDataLargeP and distDataPermute from auxiliary.R
 }

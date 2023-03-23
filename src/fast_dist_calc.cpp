@@ -1,4 +1,5 @@
 #include <RcppArmadillo.h>
+// [[Rcpp::depends(RcppArmadillo)]]
 
 using namespace Rcpp;
 
@@ -8,6 +9,7 @@ using namespace Rcpp;
 #include "stdio.h"
 #include "algorithm"
 #include "climits"
+
 
 
 //' Binary Vector to Bit
@@ -22,7 +24,7 @@ unsigned long long binvec2int(IntegerMatrix x) {
   unsigned long long u = 0;
   int n = x.nrow();
   for (int i = 0; i < n; i++) {
-    u += x(i, 0) * (unsigned long long) pow(2.0, n - 1 - i);
+    u += x(i, 0) * (unsigned long long) pow(2, n - 1 - i);
   }
   return u;
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getPValue.R
 \name{getPValue}
 \alias{getPValue}
-\title{A Non-parametric Test for Exchangeability and Homogeneity}
+\title{A Non-parametric Test of Sample Exchangeability and Feature Independence}
 \usage{
 getPValue(
   X,
@@ -11,11 +11,12 @@ getPValue(
   largeP = FALSE,
   largeN = FALSE,
   nruns = 5000,
+  type = "unbiased",
   p = 2
 )
 }
 \arguments{
-\item{X}{The binary or real matrix on which to perform test of exchangeability}
+\item{X}{The binary or real matrix on which to perform test of exchangeability.}
 
 \item{block_boundaries}{Vector denoting the positions where a new
 block of non-independent features starts. Default is NULL.}
@@ -29,16 +30,21 @@ Default is NULL.}
 
 \item{nruns}{Resampling number for exact test. Default is 5000.}
 
+\item{type}{Either an unbiased estimate of ('unbiased', default), or valid, but biased estimate of, ('valid') p-value 
+(see Hemerik and Goeman, 2018), or both ('both'). Default is 'unbiased'. Note that unbiased estimate can return \eqn{0}.}
+
 \item{p}{The power \eqn{p} of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}. Default is 2.}
 }
 \value{
-The p-value to be used to test the null hypothesis of exchangeability
+The p-value to be used to test the null hypothesis of exchangeability.
 }
 \description{
-Computes the p-value of a multivariate dataset \eqn{\mathbf{X}}, which
-informs the user if the sample is exchangeable at a given
-significance level, while simultaneously accounting for feature
-dependencies. See Aw, Spence and Song (2021) for details.
+The V test computes the p-value of a multivariate dataset \eqn{\mathbf{X}}, which
+informs the user about one of two decisions: (1) whether the sample is exchangeable 
+at a given significance level, assuming that the feature dependencies are known; 
+or (2) whether the features or groups of features are independent at a given significance
+level, assuming that the sample is exchangeable.
+See Aw, Spence and Song (2023) for details.
 }
 \details{
 Automatically detects if dataset is binary, and runs the Hamming

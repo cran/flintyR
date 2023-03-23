@@ -50,23 +50,27 @@ getHammingDistance <- function(X) {
 getLpDistance <- function(X, p) {
   # The number of columns of X is 1 (edge case)
   if (is.null(dim(X))) {
-    return(as.vector(dist(X, p = p)^p))
+    return(as.vector(dist(X, 
+                          method = "minkowski", 
+                          p = p)^p)) # [!] 5/30/22 - returns Euclidean distance unless Minkowski is specified
   }
-
+  
   # The number of columns of X is >1 and X is high-dim
   if (dim(X)[1] > 100 & dim(X)[2] > 64) {
     return(lp_distance(t(X), p))
   }
-
+  
   # X is not too large
-  return(as.vector(dist(X, p = p)^p))
+  return(as.vector(dist(X, 
+                        method = "minkowski", 
+                        p = p)^p)) # [!] 5/30/22 - returns Euclidean distance unless Minkowski is specified
   #Rfast::Dist(X, method = "euclidean", vector = TRUE)
 }
 
 #' V Statistic for Binary Matrices
 #'
 #' Computes \eqn{V} statistic for a binary matrix \eqn{\mathbf{X}}, as defined in
-#' Aw, Spence and Song (2021+).
+#' Aw, Spence and Song (2023).
 #'
 #' Dependencies: getHammingDistance
 #' @param X The \eqn{N \times P} binary matrix
@@ -96,7 +100,7 @@ getBinVStat <- function(X) {
 #'
 #' Dependencies: getLpDistance
 #' @param X The \eqn{N \times P} real matrix
-#' @param p The power \eqn{p} of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}s
+#' @param p The power \eqn{p} of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}
 #' @return \eqn{V(\mathbf{X})}, the variance of the pairwise \eqn{l_p^p} distance between samples
 #' @examples
 #' X <- matrix(nrow = 5, ncol = 10, rnorm(50))
@@ -141,7 +145,7 @@ getRealVStat <- function(X, p) {
 #'
 naiveBlockPermute1 <- function(X,
                                block_labels,
-                               p = 2) {
+                               p) {
   # Check block labels (done in the downstream function)
   # Count number of independent blocks
   num_blocks <- max(block_labels)
@@ -189,7 +193,7 @@ naiveBlockPermute1 <- function(X,
 #'
 naiveBlockPermute2 <- function(X,
                                block_boundaries,
-                               p = 2) {
+                               p) {
   # Save the number of blocks
   num_blocks <- length(block_boundaries)
   # Pemuted version of X to be returned
@@ -325,7 +329,7 @@ cachePermute <- function(dists, forward, reverse) {
 cacheBlockPermute1 <- function(X,
                                block_labels,
                                nruns,
-                               p = 2) {
+                               p) {
   # The number of blocks is B
   B <- max(block_labels)
 
@@ -348,13 +352,13 @@ cacheBlockPermute1 <- function(X,
   reverse <- buildReverse(dim(X)[1])
 
   # Write a local function for computing V_vec from permuting
-  newVLocal <- function(dists,forward,reverse, p) {
+  newVLocal <- function(dists,forward,reverse) {
     partials <- cachePermute(dists, forward, reverse)
     return(var(rowSums(partials)) / dim(X)[2])
   }
 
   # Compute vector of V statistics
-  to_return <- foreach(i=1:nruns, .combine = c) %dopar% newVLocal(dists, forward, reverse, p = 2)
+  to_return <- foreach(i=1:nruns, .combine = c) %dopar% newVLocal(dists, forward, reverse)
   # to_return <- c()
   # for (r in 1:nruns) {
   #     partials <- cachePermuteHamming(ham_dists, forward, reverse)
@@ -385,7 +389,7 @@ cacheBlockPermute1 <- function(X,
 cacheBlockPermute2 <- function(X,
                                block_boundaries,
                                nruns,
-                               p = 2) {
+                               p) {
   # The number of blocks is B
   B <- length(block_boundaries)
 
@@ -444,11 +448,13 @@ cacheBlockPermute2 <- function(X,
 #' Each element in list should be either a distance matrix or a table recording
 #' pairwise distances. 
 #' @param nruns The resampling number (use at least 1000)
+#' @param type Either an unbiased estimate ('unbiased'), or exact ('valid') p-value (see Hemerik and Goeman, 2018), or both ('both'). 
 #' @return The p-value obtained from comparing the empirical tail cdf of the observed 
 #' \eqn{V} statistic computed from distance data. 
 #' 
 distDataPermute <- function(dist_list,
-                            nruns) {
+                            nruns,
+                            type) {
   # Get number of samples
   N <- unique(sapply(dist_list, function(x) dim(x)[1]))
   
@@ -486,7 +492,17 @@ distDataPermute <- function(dist_list,
   V_vec <- foreach(i=1:nruns, .combine = c) %dopar% newVLocal(all_dist_matrix, forward, reverse)
   
   # Return
-  return(mean(V_vec > V_obs)) # strictly greater than for conservativeness
+  if (type == "valid") {
+    return(mean(c(V_vec,as.numeric(V_obs)) >= as.numeric(V_obs))) # Hemerik and Goeman (2018)
+  } else if (type == "unbiased") {
+    return(mean(V_vec > as.numeric(V_obs))) # strictly greater than for conservativeness
+  } else {
+    unbiased <- mean(V_vec > as.numeric(V_obs))
+    valid <- mean(c(V_vec,as.numeric(V_obs)) >= as.numeric(V_obs))
+    to_return <- c(unbiased,valid)
+    names(to_return) <- c("unbiased","valid")
+    return(to_return)
+  }
 }
 
 #' p-value Computation for Test of Exchangeability with Block Dependencies
@@ -503,6 +519,7 @@ distDataPermute <- function(dist_list,
 #' block of non-independent features starts. Default is NULL.
 #' @param block_labels Length \eqn{P} vector recording the block label of each feature.
 #' Default is NULL.
+#' @param type Either an unbiased estimate ('unbiased'), or exact ('valid') p-value (see Hemerik and Goeman, 2018), or both ('both').
 #' @param p The power p of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}
 #' @param nruns The resampling number (use at least 1000)
 #' @return The block permutation p-value
@@ -511,7 +528,8 @@ blockPermute <- function(X,
                          block_boundaries = NULL,
                          block_labels = NULL,
                          nruns,
-                         p = 2) {
+                         type,
+                         p) {
   # Check that exactly one of block_labels or block_boundaries is NULL
   if (!is.null(block_labels) & !is.null(block_boundaries)) {
     stop("Both block labels and block boundaries were specified. Exactly one of these should be specified.")
@@ -551,7 +569,18 @@ blockPermute <- function(X,
       V_vec <- cacheBlockPermute2(X, block_boundaries, nruns, p)
     }
   }
-  return(mean(V_vec > V_obs)) # strictly greater than for conservativeness
+  # Return
+  if (type == "valid") {
+    return(mean(c(V_vec,as.numeric(V_obs)) >= as.numeric(V_obs))) # Hemerik and Goeman (2018)
+  } else if (type == "unbiased") {
+    return(mean(V_vec > as.numeric(V_obs))) # strictly greater than for conservativeness
+  } else {
+    unbiased <- mean(V_vec > as.numeric(V_obs))
+    valid <- mean(c(V_vec,as.numeric(V_obs)) >= as.numeric(V_obs))
+    to_return <- c(unbiased,valid)
+    names(to_return) <- c("unbiased","valid")
+    return(to_return)
+  }
 }
 
 #' Tail Probability for Chi Square Convolution Random Variable
@@ -586,7 +615,7 @@ weightedChi2P <- function(val, w1, w2, d1, d2){
 #' Covariance Computations Between Pairs of Distances (Independent Case)
 #'
 #' Computes covariance matrix entries and associated alpha, beta
-#' and gamma quantities defined in Aw, Spence and Song (2021),
+#' and gamma quantities defined in Aw, Spence and Song (2023),
 #' assuming the \eqn{P} features of the dataset \eqn{\mathbf{X}} are independent.
 #'
 #' This is used in the large \eqn{P} asymptotics of the permutation test.
@@ -751,7 +780,7 @@ indGaussian <- function(X,
 #' Covariance Computations Between Pairs of Distances (Block Dependencies Case)
 #'
 #' Computes covariance matrix entries and associated alpha, beta
-#' and gamma quantities defined in Aw, Spence and Song (2021),
+#' and gamma quantities defined in Aw, Spence and Song (2023),
 #' for partitionable features that are grouped into blocks. Uses
 #' precomputation to compute the unique entries of the asymptotic
 #' covariance matrix of the pairwise Hamming distances in \eqn{O(N^2)} time.
@@ -769,7 +798,7 @@ indGaussian <- function(X,
 getBlockCov <- function(X,
                         block_boundaries,
                         block_labels,
-                        p = 2) {
+                        p) {
   # Dimensions of the problem
   N <- dim(X)[1]
   P <- dim(X)[2]
@@ -872,7 +901,7 @@ getBlockCov <- function(X,
 blockLargeP <- function(X,
                         block_boundaries,
                         block_labels,
-                        p = 2) {
+                        p) {
   N <- dim(X)[1]
   greeks <- getBlockCov(X,
                         block_boundaries,

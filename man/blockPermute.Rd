@@ -4,7 +4,7 @@
 \alias{blockPermute}
 \title{p-value Computation for Test of Exchangeability with Block Dependencies}
 \usage{
-blockPermute(X, block_boundaries = NULL, block_labels = NULL, nruns, p = 2)
+blockPermute(X, block_boundaries = NULL, block_labels = NULL, nruns, type, p)
 }
 \arguments{
 \item{X}{The binary or real matrix on which to perform
@@ -17,6 +17,8 @@ block of non-independent features starts. Default is NULL.}
 Default is NULL.}
 
 \item{nruns}{The resampling number (use at least 1000)}
+
+\item{type}{Either an unbiased estimate ('unbiased'), or exact ('valid') p-value (see Hemerik and Goeman, 2018), or both ('both').}
 
 \item{p}{The power p of \eqn{l_p^p}, i.e., \eqn{||x||_p^p = (x_1^p+...x_n^p)}}
 }

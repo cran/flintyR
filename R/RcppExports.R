@@ -13,9 +13,9 @@ NULL
 
 #' Fast Bitwise Hamming Distance Vector Computation
 #'
-#' Takes in a binary matrix X, whose transpose t(X)
-#' has N rows, and computes a vector recording all
-#' {N choose 2} pairwise Hamming distances of t(X),
+#' Takes in a binary matrix \eqn{\mathbf{X}}, whose transpose \eqn{\mathbf{X}^T}
+#' has \eqn{N} rows, and computes a vector recording all
+#' \eqn{{N \choose 2}} pairwise Hamming distances of \eqn{\mathbf{X}^T},
 #' ordered lexicographically.
 #'
 #' @param X binary matrix (IntegerMatrix class )
@@ -27,9 +27,9 @@ hamming_bitwise <- function(X) {
 
 #' Fast \eqn{l_p^p} Distance Vector Computation
 #'
-#' Takes in a double matrix X, whose transpose t(X)
-#' has N rows, and computes a vector recording all
-#' \eqn{{N \choose 2}} pairwise \eqn{l_p^p} distances of t(X),
+#' Takes in a double matrix \eqn{\mathbf{X}}, whose transpose \eqn{\mathbf{X}^T}
+#' has \eqn{N} rows, and computes a vector recording all
+#' \eqn{{N \choose 2}} pairwise \eqn{l_p^p} distances of \eqn{\mathbf{X}^T},
 #' ordered lexicographically.
 #'
 #' @param X double matrix (arma::mat class)

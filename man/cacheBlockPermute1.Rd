@@ -4,7 +4,7 @@
 \alias{cacheBlockPermute1}
 \title{Resampling Many V Statistics (Version 1)}
 \usage{
-cacheBlockPermute1(X, block_labels, nruns, p = 2)
+cacheBlockPermute1(X, block_labels, nruns, p)
 }
 \arguments{
 \item{X}{The binary or real matrix on which to perform

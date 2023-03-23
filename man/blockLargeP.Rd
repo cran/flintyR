@@ -4,7 +4,7 @@
 \alias{blockLargeP}
 \title{Approximate p-value for Test of Exchangeability (Assuming Large P with Block Dependencies)}
 \usage{
-blockLargeP(X, block_boundaries, block_labels, p = 2)
+blockLargeP(X, block_boundaries, block_labels, p)
 }
 \arguments{
 \item{X}{The binary or real matrix on which to perform test of exchangeability}
